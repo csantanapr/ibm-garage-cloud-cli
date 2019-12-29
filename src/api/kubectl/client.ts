@@ -1,5 +1,6 @@
 import {Client1_13 as Client} from 'kubernetes-client';
 import {Container, Inject, Provided, Provider, Provides} from 'typescript-ioc';
+
 const Request = require('kubernetes-client/backends/request');
 
 export abstract class KubeBackend {
@@ -26,13 +27,10 @@ class KubeClientProvider implements Provider {
   backend: KubeBackend;
 
   get(): KubeClient {
-    return new Client(this.backend.getValue());
+    return new KubeClient(this.backend.getValue());
   }
 };
 
 @Provided(Container.get(KubeClientProvider))
-export class KubeClient extends Client {}
-
-export function buildKubeClient() {
-  return Container.get(KubeClient)
+export class KubeClient extends Client {
 }

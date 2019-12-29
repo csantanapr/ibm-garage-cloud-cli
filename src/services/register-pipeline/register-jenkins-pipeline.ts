@@ -20,7 +20,7 @@ const noopNotifyStatus: (status: string) => void = () => {};
 
 const REGISTER_PIPELINE_ERROR_TYPES: {[key: string]: ErrorType} = {
   WEBHOOK: {name: 'WEBHOOK', severity: ErrorSeverity.WARNING}
-}
+};
 
 class WebhookError extends CommandError {
   constructor(message: string) {
@@ -128,14 +128,14 @@ export class RegisterJenkinsPipeline implements RegisterPipeline {
       return {clusterType: configMap.CLUSTER_TYPE, serverUrl: configMap.SERVER_URL};
     } catch (configMapError) {
 
-      console.error('Error getting cluster_type from configMap `ibmcloud-config`. Attempting to retrieve it from the secret');
+      console.error('Error getting cluster_type from configMap `ibmcloud-config`. Attempting to retrieve it from the secret', configMapError);
 
       try {
         const secret = await this.kubeSecret.getData<{cluster_type: 'openshift' | 'kubernetes'}>('ibmcloud-apikey', namespace);
 
         return {clusterType: secret.cluster_type ? secret.cluster_type : 'kubernetes'};
       } catch (secretError) {
-        console.error('Error getting cluster_type from secret `ibmcloud-apikey`. Defaulting to `kubernetes`');
+        console.error('Error getting cluster_type from secret `ibmcloud-apikey`. Defaulting to `kubernetes`', secretError);
 
         return {clusterType: 'kubernetes'};
       }

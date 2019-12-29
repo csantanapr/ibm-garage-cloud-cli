@@ -1,25 +1,13 @@
 import {KubeClient} from './client';
 import {KubeBody, KubeResource} from './kubernetes-resource-manager';
-import {Container, Provided, Provider} from 'typescript-ioc';
+import {Inject} from 'typescript-ioc';
 
 export interface Namespace extends KubeResource {
 }
 
-const provider: Provider = {
-  get: () => {
-    return new KubeNamespace({
-      client: Container.get(KubeClient)
-    })
-  }
-};
-
-@Provided(provider)
 export class KubeNamespace {
+  @Inject
   public client: KubeClient;
-
-  constructor(props: {client: KubeClient}) {
-    this.client = props.client;
-  }
 
   async create(name: string): Promise<Namespace> {
     const result: KubeBody<Namespace> = await this.client.api.v1.namespace.post({body: {

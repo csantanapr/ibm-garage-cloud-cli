@@ -1,8 +1,8 @@
 import {Container, Provided, Provider} from 'typescript-ioc';
 import * as _ from 'lodash';
 
-import {KubeClient} from './client';
 import {AbstractKubernetesResourceManager, KubeResource, Props} from './kubernetes-resource-manager';
+import {KubeKindBuilder} from './kind-builder';
 
 export interface Ingress extends KubeResource {
   spec: {
@@ -28,7 +28,7 @@ export interface Ingress extends KubeResource {
 const provider: Provider = {
   get: () => {
     return new KubeIngress({
-      client: Container.get(KubeClient),
+      client: Container.get(KubeKindBuilder),
       group: 'extension',
       version: 'v1beta1',
       name: 'ingress',
