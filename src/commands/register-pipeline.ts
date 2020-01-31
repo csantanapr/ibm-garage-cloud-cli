@@ -9,6 +9,7 @@ import {Container, Scope} from 'typescript-ioc';
 import {RegisterTektonPipeline} from '../services/register-pipeline/register-tekton-pipeline';
 import {ErrorSeverity, isCommandError} from '../util/errors';
 import {DryRunKindBuilder, KubeKindBuilder} from '../api/kubectl/kind-builder';
+import {CommandTracker} from '../api/command-tracker/command-tracker';
 
 export const command = 'pipeline';
 export const desc = 'Register a pipeline for the current code repository';
@@ -116,9 +117,9 @@ exports.handler = async (argv: Arguments<RegisterPipelineOptions & CommandLineOp
     }
   } finally {
     if (argv.dryRun) {
-      const kubeClient: DryRunKindBuilder = Container.get(KubeKindBuilder);
+      const commandTracker: CommandTracker = Container.get(CommandTracker);
 
-      console.log('Steps: ', kubeClient.steps);
+      console.log('Commands: ', commandTracker.commands);
     }
   }
 };
